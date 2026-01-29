@@ -4,6 +4,7 @@
 #define __COMPANION_PROTOCOL
 
 #include <stdint.h>
+#include "hardware/spi.h"
 
 // Companion Command Message
 typedef struct command {
@@ -39,15 +40,45 @@ typedef struct fetch_reply {
 // ripped from altos/src/kernal/ao_flight.c
 enum ao_flight_state {
 	ao_flight_startup = 0,
-	ao_flight_idle = 1,
-	ao_flight_pad = 2,
-	ao_flight_boost = 3,
-	ao_flight_fast = 4,
-	ao_flight_coast = 5,
-	ao_flight_drogue = 6,
-	ao_flight_main = 7,
-	ao_flight_landed = 8,
-	ao_flight_invalid = 9
+	ao_flight_idle    = 1,
+	ao_flight_pad     = 2,
+	ao_flight_boost   = 3,
+	ao_flight_fast    = 4,
+	ao_flight_coast   = 5,
+	ao_flight_drogue  = 6,
+	ao_flight_main    = 7,
+	ao_flight_landed  = 8,
+	ao_flight_invalid = 9,
+   ao_flight_max     = 9,
 };
+
+#define FLIGHT_STATE_STRING_MACRO(x) [x] = #x
+char * ao_flight_state_string[] = {
+   FLIGHT_STATE_STRING_MACRO(ao_flight_startup),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_idle),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_pad),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_boost),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_fast),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_coast),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_drogue),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_main),
+   FLIGHT_STATE_STRING_MACRO(ao_flight_landed),
+};
+#undef FLIGHT_STATE_STRING_MACRO
+
+// ripped from https://altusmetrum.org/AltOS/doc/companion.html
+#define COMPANION_BAUD_RATE 187500
+
+// I think this is fine...
+#define COMPANION_SPI spi0
+
+// choosing zero because it was in the example...
+#define COMPANION_ADC 0
+#define COMPANION_ADC_PIN 26 // will need to double check...
+
+#define COMPANION_ADC_CLKDIV 96 // fast as possible
+
+/* helper typedefs */
+typedef unsigned int uint;
 
 #endif
